@@ -104,3 +104,79 @@ if resp['error_code'] == 0:
 
 ```
 
+## 点赞和关注接口的测试脚本
+```
+# -*- coding:utf-8 -*-
+"""
+@desc: 
+"""
+import requests
+
+# from scripts import x_secsdk_csrf_token, cookie
+
+cookie = '' # 你的cookie
+x_secsdk_csrf_token = '' # 最新的一次点赞或关注，请求头中的x_secsdk_csrf_token
+headers = {
+    'authority': 'www.douyin.com',
+    'sec-ch-ua-mobile': '?0',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36',
+    'accept': '*/*',
+    'sec-fetch-site': 'same-origin',
+    'sec-fetch-mode': 'cors',
+    'x-secsdk-csrf-token': x_secsdk_csrf_token,
+    'sec-fetch-dest': 'empty',
+    'referer': 'https://www.douyin.com/user/MS4wLjABAAAAgq8cb7cn9ByhZbmx-XQDdRTvFzmJeBBXOUO4QflP96M?enter_method=video_title&author_id=66598046050&group_id=6976510986547105060&log_pb=%7B%22impr_id%22%3A%22021624413357501fdbddc0100fff0020a9b342d0000001b0ac6ec%22%7D&enter_from=video_detail',
+    # 'accept-language': 'zh-CN,zh;q=0.9',
+    'cookie': cookie
+}
+server_url = 'http://59.110.158.68:8787/sign_v3'
+
+
+def digg(aweme_id="6984008368784477454"):
+    digg_url = 'https://www.douyin.com/aweme/v1/web/commit/item/digg/?device_platform=webapp&aid=6383&channel=channel_pc_web&version_code=160100&version_name=16.1.0&cookie_enabled=true&screen_width=1536&screen_height=864&browser_language=zh-CN&browser_platform=Win32&browser_name=Mozilla&browser_version=5.0+(Windows+NT+10.0%3B+Win64%3B+x64)+AppleWebKit%2F537.36+(KHTML,+like+Gecko)+Chrome%2F91.0.4472.101+Safari%2F537.36&browser_online=true'
+
+    data = {
+        "url": digg_url,
+        "body": "type=1&aweme_id=%s" % aweme_id
+    }
+    response = requests.post(server_url, data=data).json()
+    print(response)
+    if response['error_code'] == 0:
+        sign = response['result']['_signature']
+        if sign:
+            digg_url += "&_signature=" + sign
+            response = requests.post(digg_url, headers=headers, data={
+                "aweme_id": aweme_id,
+                "type": "1"
+            })
+            print(response.json())
+            assert response.json().get("is_digg") == 0  # 点赞成功标志
+
+
+def follow(user_id="66598046050"):
+    follow_url = "https://www.douyin.com/aweme/v1/web/commit/follow/user/?device_platform=webapp&aid=6383&channel=channel_pc_web&version_code=160100&version_name=16.1.0"
+    data = {
+        "url": follow_url,
+        "body": "type=1&user_id=%s" % user_id
+    }
+    response = requests.post(server_url, data=data).json()
+    print(response)
+    if response['error_code'] == 0:
+        sign = response['result']['_signature']
+        if sign:
+            follow_url += "&_signature=" + sign
+            data = {
+                "type": "1",
+                "user_id": user_id
+            }
+            response = requests.post(follow_url, headers=headers, data=data)
+            try:
+                print(response.json())
+            except:
+                print(response.text)
+
+if __name__ == '__main__':
+    # digg()
+    follow()
+```
+
