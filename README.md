@@ -192,17 +192,6 @@ if __name__ == '__main__':
 
 ```
 
-## 点赞与关注接口测试代码
-****
-```python3
-# -*- coding:utf-8 -*-
-"""
-@desc: POST请求仅提供获取signature的请求实例，其余问题不做回复
-"""
-api = 'http://59.110.158.68:8787/sign_v3'
-data = {'url': 'https://www.douyin.com/aweme/v1/web/commit/item/digg/?device_platform=webapp&aid=6383&channel=channel_pc_web&version_code=160100&version_name=16.1.0&cookie_enabled=true&screen_width=1536&screen_height=864&browser_language=zh-CN&browser_platform=Win32&browser_name=Mozilla&browser_version=5.0+(Windows+NT+10.0%3B+Win64%3B+x64)+AppleWebKit%2F537.36+(KHTML,+like+Gecko)+Chrome%2F91.0.4472.101+Safari%2F537.36&browser_online=true', 'body': 'type=1&aweme_id=6984008368784477454'}
-response = requests.post(api, data=data, headers= {"Authorization":token}).json()
 
-```
 
 免责声明：此代码仅学习使用，请勿用于商业用途，如拿去非法使用与本人无关！
